@@ -1,6 +1,3 @@
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
 import time
 import duckdb
 import mysql.connector
@@ -29,7 +26,6 @@ def duckdb_select_scalability(duckdb_cursor):
 
     # Creation a DuckDB table and insert data.
     duckdb_cursor.execute("CREATE TABLE musicians(id INT, instrument VARCHAR, player VARCHAR)")
-
     for i in range(500000):
         duckdb_cursor.execute("INSERT INTO musicians VALUES (1, 'Piano', 'Ludwig van Beethoven'), (2, 'Guitar', 'Jimi Hendrix'), (3, 'Violin', 'Itzhak Perlman'), (4, 'Flute', 'James Galway'), (5, 'Drums', 'John Bonham')")
 
@@ -57,8 +53,7 @@ def duckdb_select_scalability(duckdb_cursor):
 
 # --------------------------- MYSQL ---------------------------
 def mysql_latency(mysql_cursor, mysql_connection):
-    # Creation a new MySQL table and insert data.
-
+    # Create a new MySQL table and insert data.
     mysql_cursor.execute("CREATE TABLE mysql_example (id INT, name VARCHAR(20))")
     mysql_cursor.execute("INSERT INTO mysql_example VALUES (1, 'Taylor'), (2, 'Edd'), (3, 'Charlie')")
     mysql_connection.commit()
@@ -71,7 +66,6 @@ def mysql_latency(mysql_cursor, mysql_connection):
     return mysql_latency
 
 
-
 def insert_data_into_mysql(mysql_cursor, mysql_connection):
     insert_query = "INSERT INTO musicians (instrument, player) VALUES (%s, %s)"
     data = [('Instrument ' + str(i), 'Player ' + str(i)) for i in range(1, 500000 + 1)]
@@ -80,7 +74,6 @@ def insert_data_into_mysql(mysql_cursor, mysql_connection):
 
 
 def mysql_query_execution_time(mysql_cursor):
-
     execution_time = []
     query_1 = "SELECT * FROM musicians LIMIT 5000"
     query_2 = "SELECT * FROM musicians  LIMIT 50000"
@@ -108,13 +101,8 @@ def mysql_query_execution_time(mysql_cursor):
 
 
 def mysql_select_scalability(mysql_cursor, mysql_connection):
-
     mysql_cursor.execute("CREATE TABLE musicians(id INT, instrument VARCHAR(255), player VARCHAR(255))")
-    # mysql_cursor.execute("INSERT INTO musicians VALUES (1, 'Piano', 'Ludwig van Beethoven'), (2, 'Guitar', 'Jimi Hendrix'), (3, 'Violin', 'Itzhak Perlman'), (4, 'Flute', 'James Galway'), (5, 'Drums', 'John Bonham')")
-
-    # for num_rows in num_rows_to_insert:
     insert_data_into_mysql(mysql_cursor, mysql_connection)
-
     return mysql_query_execution_time(mysql_cursor)
 
 
@@ -170,9 +158,6 @@ if __name__ == '__main__':
     print(f"[mySQL] Latency of select all from mySQL_example table (3 rows): {mysql_latency} seconds")
 
     # --------- EXPERIMENT 2 ---------
-    # Vary the number of rows to test scalability
-    num_rows_to_insert = [10, 100, 1000, 10000]
-    mysql_query = "SELECT * FROM musicians"
     mysql_execution_times, result_1, result_2, result_3 = mysql_select_scalability(mysql_cursor, mysql_connection)
     print("\n[mySQL] Experiment #2: Scalability")
     print(f"[mySQL] Execution Time: {mysql_execution_times[0]:.6f} seconds (Rows: {result_1})")
@@ -190,10 +175,3 @@ if __name__ == '__main__':
         mysql_cursor.close()
         mysql_connection.close()
         print("MySQL connection is closed.\n")
-
-    # print("-" * 50)
-    # print("Experiment #2:")
-    # print(f"Number of Rows: {num_rows_to_insert}")
-    # print(f"MySQL Execution Time: {mysql_execution_time:.6f} seconds (Rows: {mysql_row_count})")
-    # print(f"DuckDB Execution Time: {duckdb_execution_time:.6f} seconds (Rows: {duckdb_row_count})")
-    # print("-" * 50)
